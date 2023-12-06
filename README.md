@@ -2,6 +2,14 @@
 
 Eduard Andres Rodriguez Holguin - Campuslands
 
+### Modelo relacional
+
+![drawSQL-sena-export-2023-12-06](https://github.com/EduardRodriguez20/Filtro_MySQL/assets/137240216/cd3860bf-db07-41d9-83ba-71cd0aee5737)
+
+### Modelo entidad - relacion
+
+![filtro](https://github.com/EduardRodriguez20/Filtro_MySQL/assets/137240216/82483311-5f78-4629-af36-75d348867266)
+
 ### Creacion y poblacion de las tablas
 
 A continuacion se especifica la creacion de tablas y la poblacion de ellas mismas teniendo en cuenta mi criterio.
@@ -20,17 +28,24 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
       id INT PRIMARY KEY NOT NULL,
       id_carrera INT NOT NULL,
       nombre VARCHAR(64) NOT NULL,
-      FOREIGN KEY (id_carrera) REFERENCES carrera (id)    
+      FOREIGN KEY (id_carrera) REFERENCES carrera (id)  
    );
    CREATE TABLE aprendiz (
       id INT PRIMARY KEY NOT NULL,
-      nombre VARCHAR(64) NOT NULL,
+      nombres VARCHAR(32) NOT NULL,
+      apellidos VARCHAR(32) NOT NULL,
       edad INT NOT NULL
+   );
+   CREATE TABLE especialidad (
+      id INT PRIMARY KEY NOT NULL,
+      nombre VARCHAR(32) NOT NULL
    );
    CREATE TABLE instructor (
       id INT PRIMARY KEY NOT NULL,
-      nombre VARCHAR(64) NOT NULL,
-      especialidad VARCHAR(32) NOT NULL
+      nombres VARCHAR(32) NOT NULL,
+      apellidos VARCHAR(32) NOT NULL,
+      id_especialidad INT NOT NULL,
+      FOREIGN KEY (id_especialidad) REFERENCES especialidad (id)  
    );
    CREATE TABLE curso (
       id INT PRIMARY KEY NOT NULL,
@@ -88,30 +103,38 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
    (11, 'Soldadura Eléctrica Industrial', 5),
    (12, 'Soldadura Submarina', 5);
 
-   INSERT INTO aprendiz (id, nombre, edad) VALUES
-   (1, 'Carlos Saúl Gómez', 18),
-   (2, 'Leyla María Delgado Vargas', 20),
-   (3, 'Juan José Cardona', 23),
-   (4, 'Sergio Augusto Contreras Navas', 19),
-   (5, 'Ana María Velázquez Parra', 24),
-   (6, 'Gustavo Noriega Alzate', 24),
-   (7, 'Pedro Nell Gómez Díaz', 21),
-   (8, 'Jairo Augusto Castro Camargo', 26),
-   (9, 'Henry Soler Vega', 25),
-   (10, 'Antonio Cañate Cortés', 28),
-   (11, 'Daniel Simancas Junior', 27);
+   INSERT INTO aprendiz (id, nombres, apellidos, edad) VALUES
+   (1, 'Carlos Saúl', 'Gómez', 18),
+   (2, 'Leyla María', 'Delgado Vargas', 20),
+   (3, 'Juan José', 'Cardona', 23),
+   (4, 'Sergio Augusto', 'Contreras Navas', 19),
+   (5, 'Ana María', 'Velázquez Parra', 24),
+   (6, 'Gustavo', 'Noriega Alzate', 24),
+   (7, 'Pedro Nell', 'Gómez Díaz', 21),
+   (8, 'Jairo Augusto', 'Castro Camargo', 26),
+   (9, 'Henry', 'Soler Vega', 25),
+   (10, 'Antonio', 'Cañate Cortés', 28),
+   (11, 'Daniel', 'Simancas Junior', 27);
+   
+   INSERT INTO especialidad (id, nombre) VALUES
+   (1, 'Sistemas'),
+   (2, 'Electrónica'),
+   (3, 'Inglés'),
+   (4, 'Salud Ocupacional'),
+   (5, 'Soldadura'),
+   (6, 'Mecánica');
 
-   INSERT INTO instructor (id, nombre, especialidad) VALUES
-   (1, 'Ricardo Vicente Jaimes', 'Sistemas'),
-   (2, 'Marinela Narvaez', 'Salud Ocupacional'),
-   (3, 'Agustín Parra Granados', 'Soldadura'),
-   (4, 'Nelson Raúl Buitrago', 'Mecánica'),
-   (5, 'Roy Hernando Llamas', 'Inglés'),
-   (6, 'Maria Jimena Monsalve', 'Electrónica'),
-   (7, 'Juan Carlos Cobos', 'Electrónica'),
-   (8, 'Pedro Nell Santamaría', 'Sistemas'),
-   (9, 'Andrea González', 'Sistemas'),
-   (10, 'Marisela Sevilla', 'Salud Ocupacional');
+   INSERT INTO instructor (id, nombres, apellidos, id_especialidad) VALUES
+   (1, 'Ricardo Vicente', 'Jaimes', 1),
+   (2, 'Marinela', 'Narvaez', 4),
+   (3, 'Agustín', 'Parra Granados', 5),
+   (4, 'Nelson Raúl', 'Buitrago', 6),
+   (5, 'Roy Hernando', 'Llamas', 3),
+   (6, 'Maria Jimena', 'Monsalve', 2),
+   (7, 'Juan Carlos', 'Cobos', 2),
+   (8, 'Pedro Nell', 'Santamaría', 1),
+   (9, 'Andrea', 'González', 1),
+   (10, 'Marisela', 'Sevilla', 4);
 
    INSERT INTO curso (id, nombre, id_instructor) VALUES
    (1, 'Matemáticas Básicas', 4),
@@ -246,7 +269,8 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
    ```sql
       CREATE TABLE aprendiz (
       id INT PRIMARY KEY NOT NULL,
-      nombre VARCHAR(64) NOT NULL,
+      nombres VARCHAR(32) NOT NULL,
+      apellidos VARCHAR(32) NOT NULL,
       edad INT NOT NULL
       );
    ```
@@ -254,13 +278,14 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
    Validacion de la tabla:
    
    ```bash
-   +--------+-------------+------+-----+---------+-------+
-   | Field  | Type        | Null | Key | Default | Extra |
-   +--------+-------------+------+-----+---------+-------+
-   | id     | int         | NO   | PRI | NULL    |       |
-   | nombre | varchar(64) | NO   |     | NULL    |       |
-   | edad   | int         | NO   |     | NULL    |       |
-   +--------+-------------+------+-----+---------+-------+
+   +----------+-------------+------+-----+---------+-------+
+   | Field    | Type        | Null | Key | Default | Extra |
+   +----------+-------------+------+-----+---------+-------+
+   | id       | int         | NO   | PRI | NULL    |       |
+   | nombres  | varchar(32) | NO   |     | NULL    |       |
+   | apellidos| varchar(32) | NO   |     | NULL    |       |
+   | edad     | int         | NO   |     | NULL    |       |
+   +----------+-------------+------+-----+---------+-------+
    ```
 
 3. Si suponemos que los cursos tienen una duración diferente dependiendo de la ruta que lo contenga ¿qué modificación haría a la estructura de datos ya planteada?
@@ -294,7 +319,7 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
 4. Seleccionar los nombres y edades de aprendices que están cursando la carrera de electrónica.
 
    ```sql
-      SELECT aprendiz.nombre, aprendiz.edad FROM matricula
+      SELECT CONCAT(aprendiz.nombres, " ", aprendiz.apellidos) AS nombre, aprendiz.edad AS edad FROM matricula
       INNER JOIN aprendiz ON id_aprendiz = aprendiz.id
       INNER JOIN ruta ON id_ruta = ruta.id
       INNER JOIN carrera ON ruta.id_carrera = carrera.id
@@ -317,7 +342,7 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
 5. Seleccionar Nombres de Aprendices junto al nombre de la ruta de aprendizaje que cancelaron.
 
    ```sql
-      SELECT aprendiz.nombre AS Aprendiz, ruta.nombre AS Ruta_Cancelada FROM matricula
+      SELECT CONCAT(aprendiz.nombres, " ", aprendiz.apellidos) AS Aprendiz, ruta.nombre AS Ruta_Cancelada FROM matricula
       INNER JOIN aprendiz ON id_aprendiz = aprendiz.id
       INNER JOIN ruta ON id_ruta = ruta.id
       WHERE estado = "Cancelado";
@@ -361,7 +386,7 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
 7. Seleccionar Nombres de los instructores que dictan cursos en la ruta de aprendizaje “Sistemas de Información Empresariales”.
 
    ```sql
-      SELECT instructor.nombre AS Instructor, curso.nombre AS Curso FROM instructor
+      SELECT CONCAT(instructor.nombres, " ", instructor.apellidos) AS Instructor, curso.nombre AS Curso FROM instructor
       INNER JOIN curso ON instructor.id = curso.id_instructor
       INNER JOIN cursos_en_ruta ON curso.id = cursos_en_ruta.id_curso
       INNER JOIN ruta ON cursos_en_ruta.id_ruta = ruta.id
@@ -386,7 +411,7 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
 8. Genere un listado de todos los aprendices que terminaron una Carrera mostrando el nombre del profesional, el nombre de la carrera y el énfasis de la carrera (Nombre de la Ruta de aprendizaje)
 
    ```sql
-      SELECT aprendiz.nombre AS Profesional, 
+      SELECT CONCAT(aprendiz.nombres, " ", aprendiz.apellidos) AS Profesional, 
       carrera.nombre AS Carrera,
       ruta.nombre AS Enfasis
       FROM matricula
@@ -465,7 +490,7 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
    Por ultimo se hace la consulta requerida.
 
    ```sql
-      SELECT aprendiz.nombre AS Aprendiz, curso.nombre AS Curso FROM matricula
+      SELECT CONCAT(aprendiz.nombres, " ", aprendiz.apellidos) AS Aprendiz, curso.nombre AS Curso FROM matricula
       INNER JOIN aprendiz ON id_aprendiz = aprendiz.id
       INNER JOIN cursos_en_matricula ON matricula.id = cursos_en_matricula.id_matricula
       INNER JOIN cursos_en_ruta ON cursos_en_matricula.id_curso_ruta = cursos_en_ruta.id
@@ -487,7 +512,7 @@ A continuacion se especifica la creacion de tablas y la poblacion de ellas misma
 10.  Nombres de Instructores que no tienen curso asignado.
    
    ```sql
-      SELECT instructor.nombre FROM instructor 
+      SELECT CONCAT(instructor.nombres, " ", instructor.apellidos) FROM instructor 
       LEFT JOIN curso ON instructor.id = curso.id_instructor
       WHERE curso.id_instructor IS NULL;
    ```
